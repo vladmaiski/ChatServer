@@ -1,0 +1,5 @@
+﻿  server.cpp
+C:\ChatServer\ChatServer\server.cpp(45,27): warning C4018: <: несоответствие типов со знаком и без знака
+  servClient.cpp
+  Создание кода...
+  ChatServer.vcxproj -> C:\ChatServer\Debug\ChatServer.exe
