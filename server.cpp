@@ -13,7 +13,7 @@ const int PACKET_TYPE_LENGHT = 5;
 const int MAX_CLIENT_AMOUNT = 100;
 
 const char *MSG_PCKT = "/000/";
-const char* REG_PCKT = "/111/";
+const char *REG_PCKT = "/111/";
 const char *DISCONNECT_PCKT = "/222/";
 
 std::vector<Client*> clients;
@@ -25,12 +25,12 @@ void clientHandler(Client *currentClient)
     char* msg;
     while (true) 
     {
-        recv(currentClient->socket, msgLen, 4, NULL);
-        int len = std::stoi(msgLen);
-        msg = (char*)calloc(len + 1, sizeof(char));
-        recv(currentClient->socket, msgLen, len, NULL);
-        packetHandle(msg, currentClient);
-        free(msg);
+            recv(currentClient->socket, msgLen, 4, NULL);
+            int len = std::stoi(msgLen);
+            msg = (char*)calloc(len + 1, sizeof(char));
+            recv(currentClient->socket, msg, len, NULL);
+            packetHandle(msg, currentClient);
+            free(msg);
     }
 }
 
@@ -41,10 +41,10 @@ void packetHandle(char* _msg, Client *currentClient)
     std::string msg = packet.substr(PACKET_TYPE_LENGHT, packet.length() - PACKET_TYPE_LENGHT);
     if (!packetType.compare(MSG_PCKT))
     {
-        msg = currentClient->name + msg;
+        msg = "" + currentClient->name + ": " + msg;
         for (int i = 0; i < clients.size(); i++)
         {
-            if (clients[i] = currentClient)
+            if (clients[i] == currentClient)
                 continue;
             sendPacket(clients[i]->socket, msg);
         }
@@ -72,7 +72,7 @@ void sendPacket(SOCKET client, const std::string &packet)
 {
     std::string msg = std::to_string(packet.length());
     send(client, msg.c_str(), 4, NULL);
-    send(client, msg.c_str(), packet.length(), NULL);
+    send(client, packet.c_str(), packet.length(), NULL);
 }
 
 int main()
@@ -101,7 +101,9 @@ int main()
     SOCKET clientSock;
     while (true) 
     {
+        std::cout << "lox1" << std::endl;
         clientSock = accept(listener, (SOCKADDR*)&addr, &size);
+        std::cout << "lox" << std::endl;
         if (clientSock == 0)
         {
             std::cout << "Connection failed" << std::endl;
