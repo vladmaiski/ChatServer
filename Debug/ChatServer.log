@@ -1,8 +1,7 @@
 ﻿  server.cpp
-C:\ChatServer\ChatServer\server.cpp(95,16): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(99,31): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(161,22): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(175,20): warning C4018: <: несоответствие типов со знаком и без знака
-  servClient.cpp
-  Создание кода...
-LINK : fatal error LNK1104: не удается открыть файл "C:\ChatServer\Debug\ChatServer.exe"
+C:\ChatServer\ChatServer\server.cpp(98,16): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(102,31): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(158,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(168,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(217,20): warning C4018: <: несоответствие типов со знаком и без знака
+  ChatServer.vcxproj -> C:\ChatServer\ChatServer\Debug\ChatServer.exe

@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\ChatServer\Debug\ChatServer.exe</FullPath>
+      <FullPath>C:\ChatServer\ChatServer\Debug\ChatServer.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

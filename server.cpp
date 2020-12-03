@@ -26,6 +26,7 @@ const char* USER_NOT_REGISTRED_PCKT = "/555/";
 const char* NOT_LOGGED_PCKT = "/666/";
 const char* LOGGED_PCKT = "/777/";
 const char* USER_INFO_PCKT = "/888/";
+const char* PRIVATE_MSG = "/999/";
 
 std::vector<Client*> clients;
 int userAmount;
@@ -48,6 +49,7 @@ void clientHandler(Client* currentClient)
 		}
 		catch (...) {
 			std::cout << "Exception" << std::endl;
+			disconnectUser(currentClient);
 			ExitThread(1);
 		}
 		//free(msg);
@@ -58,13 +60,14 @@ bool regUser(std::string& name, std::string& password) {
 	FILE* database = fopen(FILE_PATH, "a+");
 	char userName[11];
 	char userPassword[11];
+	bool isRegistred = true;
 	while (fscanf(database, "%s %s", userName, userPassword) != EOF) {
 		if (!name.compare(userName))
-			return false;
+			isRegistred = false;
 	}
 	fprintf(database, "%s %s\n", name.c_str(), password.c_str());
 	fclose(database);
-	return true;
+	return isRegistred;
 }
 
 
@@ -111,25 +114,18 @@ void packetHandle(char* _msg, Client* currentClient)
 	{
 		if(regUser(userLogin, userPassword))
 		{
-			sendPacket(currentClient->socket, std::string(USER_REGISTRED_PCKT));
+			send(currentClient->socket, USER_REGISTRED_PCKT, PACKET_TYPE_LENGHT, NULL);
 		}
 		else
 		{
-			sendPacket(currentClient->socket, std::string(USER_NOT_REGISTRED_PCKT));
+			send(currentClient->socket, USER_NOT_REGISTRED_PCKT, PACKET_TYPE_LENGHT, NULL);
 		}
 		return;
 	}
 
 	if (!packetType.compare(DISCONNECT_PCKT))
 	{
-		closesocket(currentClient->socket);
-		if(currentClient->name != "")
-			std::cout << "Deleted - " << currentClient->name << std::endl;
-		auto it = find(clients.begin(), clients.end(), currentClient);
-		clients.erase(clients.begin() + distance(clients.begin(), it));
-		userAmount--;
-
-		sendUsersInfo();
+		disconnectUser(currentClient);
 
 		delete currentClient;
 		free(_msg);
@@ -139,19 +135,19 @@ void packetHandle(char* _msg, Client* currentClient)
 
 	if (!packetType.compare(LOG_PCKT))
 	{
-		if (verifyUser(userLogin, userPassword))
+		if (verifyUser(userLogin, userPassword) && !checkOnline(userLogin))
 		{
 			currentClient->name = userLogin;
 			std::cout << "Added   - " << userLogin << std::endl;
 			currentClient->isAuth = true;
-			sendPacket(currentClient->socket, std::string(LOGGED_PCKT));
+			send(currentClient->socket, LOGGED_PCKT, PACKET_TYPE_LENGHT, NULL);
 			sendUsersInfo();
 		} else
 		{
-			sendPacket(currentClient->socket, std::string(NOT_LOGGED_PCKT));
+			send(currentClient->socket, NOT_LOGGED_PCKT, PACKET_TYPE_LENGHT, NULL);
 		}
-
 	}
+
 
 	if(currentClient->isAuth)
 	{
@@ -165,8 +161,55 @@ void packetHandle(char* _msg, Client* currentClient)
 				sendPacket(clients[i]->socket, msg);
 			}
 		}
+		if (!packetType.compare(PRIVATE_MSG))
+		{
+			
+			for (int i = 0; i < msg.size(); i++)
+			{
+				if (msg[i] == ':')
+				{
+					std::string reiceverName(msg.substr(0, i));
+					msg = msg.substr(i + 1, msg.size() - i + 1);
+					msg = PRIVATE_MSG + currentClient->name + ": " + msg;
+					if(reiceverName.compare(currentClient->name))
+					{
+ 						for (Client* client : clients)
+						{
+							if (!reiceverName.compare(client->name))
+								sendPacket(client->socket, msg);
+						}
+					}
+					break;
+				}
+
+			}
+		}
 	}
 }
+
+void disconnectUser(Client* currentClient)
+{
+	closesocket(currentClient->socket);
+	if (currentClient->name != "")
+		std::cout << "Deleted - " << currentClient->name << std::endl;
+	auto it = find(clients.begin(), clients.end(), currentClient);
+	clients.erase(clients.begin() + distance(clients.begin(), it));
+	userAmount--;
+
+	sendUsersInfo();
+}
+
+
+bool checkOnline(std::string name)
+{
+	for (Client* client : clients)
+	{
+		if (!name.compare(client->name))
+			return true;
+	}
+	return false;
+}
+
 
 void sendUsersInfo()
 {
@@ -174,9 +217,11 @@ void sendUsersInfo()
 	msg += USER_INFO_PCKT;
 	for (int i = 0; i < clients.size(); i++)
 	{
-		if (i != 0)
-			msg += ".";
-		msg += clients[i]->name;
+		if (clients[i]->name != "")
+		{
+			msg += clients[i]->name;
+			msg += ":";
+		}
 	}
 	for (Client* client : clients)
 	{
