@@ -33,6 +33,10 @@ int userAmount;
 
 void clientHandler(Client* currentClient)
 {
+	currentClient->privateKey = generatePrivateKey();
+	std::string msgKey(std::to_string(currentClient->privateKey));
+	send(currentClient->socket, msgKey.c_str(), PACKET_TYPE_LENGHT, NULL);
+
 	char msgLen[5] = {};
 	char* msg;
 	while (true)
@@ -81,6 +85,15 @@ bool verifyUser(std::string& name, std::string& password) {
 	}
 	fclose(database);
 	return false;
+}
+
+std::string crypt(std::string msg, char key)
+{
+	std::string encryptedMsg;
+	for (int i = 0; i < msg.size(); i++) {
+		encryptedMsg += msg[i] ^ key;
+	}
+	return encryptedMsg;
 }
 
 void packetHandle(char* _msg, Client* currentClient)
@@ -161,9 +174,10 @@ void packetHandle(char* _msg, Client* currentClient)
 				sendPacket(clients[i]->socket, msg);
 			}
 		}
+
 		if (!packetType.compare(PRIVATE_MSG))
-		{
-			
+		{	
+			//msg = crypt(msg, currentClient->privateKey);
 			for (int i = 0; i < msg.size(); i++)
 			{
 				if (msg[i] == ':')
@@ -181,7 +195,6 @@ void packetHandle(char* _msg, Client* currentClient)
 					}
 					break;
 				}
-
 			}
 		}
 	}
@@ -199,6 +212,12 @@ void disconnectUser(Client* currentClient)
 	sendUsersInfo();
 }
 
+char generatePrivateKey()
+{
+		srand(time(0));
+		char key = rand() % 10 + 1;
+		return key;
+}
 
 bool checkOnline(std::string name)
 {
@@ -217,7 +236,7 @@ void sendUsersInfo()
 	msg += USER_INFO_PCKT;
 	for (int i = 0; i < clients.size(); i++)
 	{
-		if (clients[i]->name != "")
+		if (clients[i]->isAuth)
 		{
 			msg += clients[i]->name;
 			msg += ":";
@@ -225,7 +244,8 @@ void sendUsersInfo()
 	}
 	for (Client* client : clients)
 	{
-		sendPacket(client->socket, msg);
+		if (client->isAuth == true)
+			sendPacket(client->socket, msg);
 	}
 }
 

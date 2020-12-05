@@ -1,7 +1,9 @@
 ﻿  server.cpp
-C:\ChatServer\ChatServer\server.cpp(98,16): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(102,31): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(158,22): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(168,22): warning C4018: <: несоответствие типов со знаком и без знака
-C:\ChatServer\ChatServer\server.cpp(217,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(93,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(111,16): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(115,31): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(170,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(181,22): warning C4018: <: несоответствие типов со знаком и без знака
+C:\ChatServer\ChatServer\server.cpp(217,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\ChatServer\ChatServer\server.cpp(237,20): warning C4018: <: несоответствие типов со знаком и без знака
   ChatServer.vcxproj -> C:\ChatServer\ChatServer\Debug\ChatServer.exe

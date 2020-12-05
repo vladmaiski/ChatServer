@@ -9,11 +9,10 @@ public:
 	SOCKET socket;
 	std::string name;
 	bool isAuth;
+	char privateKey;
 
 	Client(SOCKET socket)
 	{
-		this->name = name;
 		this->socket = socket;
 	}
-
 };
