@@ -5,5 +5,6 @@ void sendPacket(SOCKET client, const std::string& packet);
 void sendUsersInfo();
 bool checkOnline(std::string name);
 void disconnectUser(Client* currentClient);
-char generatePrivateKey();
-std::string crypt(std::string msg, char key);
+bool checkLen(std::string msg, int maxSize);
+std::string censure(std::string msg);
+bool isNameValid(std::string name);

@@ -8,8 +8,7 @@ class Client
 public:
 	SOCKET socket;
 	std::string name;
-	bool isAuth;
-	char privateKey;
+	bool isAuth = false;
 
 	Client(SOCKET socket)
 	{
